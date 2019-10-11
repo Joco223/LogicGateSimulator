@@ -27,11 +27,17 @@ namespace GUI {
 		std::string internal_name;
 		Simple2D::Colour regular_colour, clicked_colour;
 	public:
-		button(const Simple2D::Context& ctx, int pos_x, int pos_y, int height, const char* sprite_path, const std::string& internal_name, const Simple2D::Colour& regular_colour, const Simple2D::Colour& clicked_colour);
+		/*button(const Simple2D::Context& ctx, int pos_x, int pos_y, int height, const char* sprite_path, const std::string& internal_name, const Simple2D::Colour& regular_colour, const Simple2D::Colour& clicked_colour);
 
 		button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, int pos_x, int pos_y, int height, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& regular_colour, const Simple2D::Colour& clicked_colour);
 
-		button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, int pos_x, int pos_y, int height, const char* sprite_path, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& regular_colour, const Simple2D::Colour& clicked_colour);
+		button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, int pos_x, int pos_y, int height, const char* sprite_path, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& regular_colour, const Simple2D::Colour& clicked_colour);*/
+
+		button(int pos_x, int pos_y, int height, const std::string& internal_name, const Simple2D::Colour& regular_colour, const Simple2D::Colour& clicked_colour);
+
+		void add_text(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name);
+		void add_sprite(const Simple2D::Context& ctx, const char* sprite_path);
+		void add_text_sprite(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name, const char* sprite_path);
 
 		void draw_button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx);
 		void detect_button_click(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, GUI& gui_parent, const Simple2D::mouse_button_e& mouse_button_event);
@@ -51,9 +57,9 @@ namespace GUI {
 
 		void handle_mouse_click(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, GUI& gui_parent, const Simple2D::mouse_button_e& mouse_button_event);
 
-		void add_button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const char* sprite_path, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& clicked_colour);
-		void add_button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& clicked_colour);
-		void add_button(const Simple2D::Context& ctx, const char* sprite_path, const std::string& internal_name, const Simple2D::Colour& clicked_colour);
+		void add_button_text_sprite(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const char* sprite_path, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& clicked_colour);
+		void add_button_text(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& clicked_colour);
+		void add_button_sprite(const Simple2D::Context& ctx, const char* sprite_path, const std::string& internal_name, const Simple2D::Colour& clicked_colour);
 
 		void draw_menu_bar(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx);
 	};

@@ -33,10 +33,10 @@ int main() {
 	int rel_y = 0;
 
 	GUI::GUI gui;
-	GUI::menu_bar main_bar = GUI::menu_bar(0, height*0.96, width, height-height*0.96, {20, 20, 20, 255});
+	GUI::menu_bar main_bar = GUI::menu_bar(0, height*0.97, width, height-height*0.97, {20, 20, 20, 255});
 	gui.add_menu_bar(&main_bar);
-	main_bar.add_button(text_ctx, ctx, "Wire", "wire_button", {200, 200, 200, 255});
-	main_bar.add_button(text_ctx, ctx, "Chips", "chip_button", {200, 200, 200, 255});
+	main_bar.add_button_sprite(ctx, "wire_icon.png", "wire_button", {200, 200, 200, 255});
+	main_bar.add_button_text_sprite(text_ctx, ctx, "chip_icon.png", "Chips", "chip_button", {200, 200, 200, 255});
 
 	while(!ctx.check_exit()) {
 		ctx.clear();

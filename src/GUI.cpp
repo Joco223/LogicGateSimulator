@@ -2,7 +2,7 @@
 
 namespace GUI {
 
-	button::button(const Simple2D::Context& ctx, int pos_x_, int pos_y_, int height_, const char* sprite_path, const std::string& internal_name_, const Simple2D::Colour& regular_colour_, const Simple2D::Colour& clicked_colour_)
+	/*button::button(const Simple2D::Context& ctx, int pos_x_, int pos_y_, int height_, const char* sprite_path, const std::string& internal_name_, const Simple2D::Colour& regular_colour_, const Simple2D::Colour& clicked_colour_)
 		:
 		pos_x(pos_x_),
 		pos_y(pos_y_),
@@ -44,14 +44,48 @@ namespace GUI {
 		clicked_colour(clicked_colour_) {
 			sprite = Simple2D::Sprite(ctx, sprite_path);
 			text_ctx.get_text_size(ctx, width, height, display_name, height_/1.3333);
+			width += height+6;
 			height = height_;
-		}
+		}*/
+
+	button::button(int pos_x_, int pos_y_, int height_, const std::string& internal_name_, const Simple2D::Colour& regular_colour_, const Simple2D::Colour& clicked_colour_)
+		:
+		pos_x(pos_x_),
+		pos_y(pos_y_),
+		width(0),
+		height(height_),
+		clicked(false),
+		internal_name(internal_name_),
+		regular_colour(regular_colour_),
+		clicked_colour(clicked_colour_) {}
+
+	void button::add_text(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name) {
+		int old_height = height;
+		text_ctx.get_text_size(ctx, width, height, display_name, height/1.3333);
+		height = old_height;
+	}
+
+	void button::add_sprite(const Simple2D::Context& ctx, const char* sprite_path) {
+		sprite = Simple2D::Sprite(ctx, sprite_path);
+		width = height;
+	}
+
+	void button::add_text_sprite(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name_, const char* sprite_path) {
+		int old_height = height;
+		display_name = display_name_;
+		sprite = Simple2D::Sprite(ctx, sprite_path);
+		text_ctx.get_text_size(ctx, width, height, display_name, height/1.3333);
+		width += 6 + height;
+		height = old_height;
+	}
 
 	void button::draw_button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx) {
 		if(clicked) {
-			ctx.draw_rect(pos_x, pos_y, width, height, clicked_colour, true);
+			ctx.draw_rect(pos_x-2, pos_y, width+3, height, clicked_colour - 10, true);
+			ctx.draw_rect(pos_x, pos_y+1, width, height-2, clicked_colour, true);
 		}else{
-			ctx.draw_rect(pos_x, pos_y, width, height, regular_colour, true);
+			ctx.draw_rect(pos_x-2, pos_y, width+3, height, regular_colour - 10, true);
+			ctx.draw_rect(pos_x, pos_y+1, width, height-2, regular_colour, true);
 		}
 		int total_size = 0;
 
@@ -119,20 +153,23 @@ namespace GUI {
 		}
 	}
 
-	void menu_bar::add_button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const char* sprite_path, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& clicked_colour) {
-		buttons.push_back(button(text_ctx, ctx, button_row_length, pos_y, height, sprite_path, display_name, internal_name, colour, clicked_colour));
+	void menu_bar::add_button_text_sprite(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const char* sprite_path, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& clicked_colour) {
+		buttons.push_back(button(button_row_length, pos_y, height, internal_name, colour, clicked_colour));
+		buttons[buttons.size()-1].add_text_sprite(text_ctx, ctx, display_name, sprite_path);
 		button_row_length += buttons[buttons.size()-1].get_button_width() + 3;
 		button_end_pos.push_back(button_row_length-2);
 	}
 
-	void menu_bar::add_button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& clicked_colour) {
-		buttons.push_back(button(text_ctx, ctx, button_row_length, pos_y, height, display_name, internal_name, colour, clicked_colour));
+	void menu_bar::add_button_text(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& clicked_colour) {
+		buttons.push_back(button(button_row_length, pos_y, height, internal_name, colour, clicked_colour));
+		buttons[buttons.size()-1].add_text(text_ctx, ctx, display_name);
 		button_row_length += buttons[buttons.size()-1].get_button_width() + 3;
 		button_end_pos.push_back(button_row_length-2);
 	}
 
-	void menu_bar::add_button(const Simple2D::Context& ctx, const char* sprite_path, const std::string& internal_name, const Simple2D::Colour& clicked_colour) {
-		buttons.push_back(button(ctx, button_row_length, pos_y, height, sprite_path, internal_name, colour, clicked_colour));
+	void menu_bar::add_button_sprite(const Simple2D::Context& ctx, const char* sprite_path, const std::string& internal_name, const Simple2D::Colour& clicked_colour) {
+		buttons.push_back(button(button_row_length, pos_y, height, internal_name, colour, clicked_colour));
+		buttons[buttons.size()-1].add_sprite(ctx, sprite_path);
 		button_row_length += buttons[buttons.size()-1].get_button_width() + 3;
 		button_end_pos.push_back(button_row_length-2);
 	}
@@ -143,7 +180,7 @@ namespace GUI {
 		int index = 0;
 		for(auto& i : buttons) {
 			i.draw_button(text_ctx, ctx);
-			ctx.draw_line(button_end_pos[index], pos_y + height/5, button_end_pos[index], pos_y + 4*height/5, {255, 255, 255, 255});
+			//ctx.draw_line(button_end_pos[index], pos_y + height/5, button_end_pos[index], pos_y + 4*height/5, {255, 255, 255, 255});
 			index++;
 		}
 	}
