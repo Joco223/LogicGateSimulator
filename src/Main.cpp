@@ -13,8 +13,8 @@
 #include <optional>
 #include <functional>
 
-constexpr int width                      = 1280;
-constexpr int height                     = 720;
+constexpr int width                      = 1600;
+constexpr int height                     = 900;
 constexpr Simple2D::Colour window_colour = {50, 50, 50, 255};
 
 int main() {
@@ -37,6 +37,7 @@ int main() {
 	gui.add_menu_bar(&main_bar);
 	main_bar.add_button_sprite(ctx, "wire_icon.png", "wire_button", {200, 200, 200, 255});
 	main_bar.add_button_text_sprite(text_ctx, ctx, "chip_icon.png", "Chips", "chip_button", {200, 200, 200, 255});
+	main_bar.add_pop_up_window(ctx, 10, 550, 350, {20, 20, 20, 255}, {10, 10, 10, 100}, "Chips", "chips_pop_up_window", "chip_button");
 
 	while(!ctx.check_exit()) {
 		ctx.clear();
@@ -64,16 +65,15 @@ int main() {
 		GUI::event gui_event = gui.peek_event_stack();
 		while(gui_event.event_type != -1) {
 			if(gui_event.source == "wire_button") {
-				if(gui_event.event_type == Simple2D::MOUSE_DOWN) {
+				if(gui_event.event_type == Simple2D::MOUSE_DOWN && gui_event.event_desc_bool) {
 					std::cout << "Wire button was pressed with button: " << gui_event.event_desc_1 << '\n';
-				}else{
-					std::cout << "Wire button was released with button: " << gui_event.event_desc_1 << '\n';
+					main_bar.set_button_state("wire_button", !main_bar.get_button_state("wire_button"));
 				}
 			}else if(gui_event.source == "chip_button") {
-				if(gui_event.event_type == Simple2D::MOUSE_DOWN) {
+				if(gui_event.event_type == Simple2D::MOUSE_DOWN && gui_event.event_desc_bool) {
 					std::cout << "Chip button was pressed with button: " << gui_event.event_desc_1 << '\n';
-				}else{
-					std::cout << "Chip button was released with button: " << gui_event.event_desc_1 << '\n';
+					main_bar.set_button_state("chip_button", !main_bar.get_button_state("chip_button"));
+					main_bar.set_pop_up_window_direction("chips_pop_up_window", !main_bar.get_pop_up_window_direction("chips_pop_up_window"));
 				}
 			}
 			gui_event = gui.peek_event_stack();

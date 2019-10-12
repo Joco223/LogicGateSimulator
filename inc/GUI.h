@@ -8,12 +8,14 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <unordered_map>
 
 namespace GUI {
 
 	struct event {
 		std::string source;
 		int event_type, event_desc_1;
+		bool event_desc_bool;
 	};
 
 	class GUI;
@@ -27,31 +29,49 @@ namespace GUI {
 		std::string internal_name;
 		Simple2D::Colour regular_colour, clicked_colour;
 	public:
-		/*button(const Simple2D::Context& ctx, int pos_x, int pos_y, int height, const char* sprite_path, const std::string& internal_name, const Simple2D::Colour& regular_colour, const Simple2D::Colour& clicked_colour);
-
-		button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, int pos_x, int pos_y, int height, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& regular_colour, const Simple2D::Colour& clicked_colour);
-
-		button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, int pos_x, int pos_y, int height, const char* sprite_path, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& regular_colour, const Simple2D::Colour& clicked_colour);*/
-
+		button();
 		button(int pos_x, int pos_y, int height, const std::string& internal_name, const Simple2D::Colour& regular_colour, const Simple2D::Colour& clicked_colour);
 
 		void add_text(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name);
 		void add_sprite(const Simple2D::Context& ctx, const char* sprite_path);
 		void add_text_sprite(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name, const char* sprite_path);
 
+		void set_clicked(const bool& new_clicked);
+		bool get_clicked();
+
 		void draw_button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx);
 		void detect_button_click(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, GUI& gui_parent, const Simple2D::mouse_button_e& mouse_button_event);
 
+		
 		int get_button_width() const;
+		int get_pos_x() const;
+		int get_pos_y() const;
+	};
+
+	class pop_up_window {
+	private:
+		int pos_x, pos_y, scaled_pos_x, scaled_width, width, height, animation_step;
+		bool direction;
+		Simple2D::Colour colour, background_colour;
+		std::string title, internal_name;
+		//std::unoreder_map<std::string, tile_button> buttons;
+	public:
+		pop_up_window();
+		pop_up_window(const Simple2D::Context& ctx, int pos_x, int pos_y, int scaled_pos_x, int scaled_width, int width, int height, const Simple2D::Colour& colour, const Simple2D::Colour& background_colour, const std::string& title, const std::string& internal_name);
+
+		bool get_direction() const;
+		void set_direction(bool);
+
+		void draw_scale_up(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx);
+		void draw_scale_down(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx);
 	};
 
 	class menu_bar {
 	private:
 		int pos_x, pos_y, width, height, button_row_length;
 		Simple2D::Colour colour;
-		std::vector<button> buttons;
-		std::vector<int> button_end_pos;
-		//std::vector<label> labels;
+		std::unordered_map<std::string, button> buttons;
+		std::unordered_map<std::string, pop_up_window> pop_up_windows;
 	public:
 		menu_bar(int pos_x, int pos_y, int width, int height, const Simple2D::Colour& colour);
 
@@ -60,6 +80,14 @@ namespace GUI {
 		void add_button_text_sprite(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const char* sprite_path, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& clicked_colour);
 		void add_button_text(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& clicked_colour);
 		void add_button_sprite(const Simple2D::Context& ctx, const char* sprite_path, const std::string& internal_name, const Simple2D::Colour& clicked_colour);
+
+		void set_button_state(const std::string& internal_name, const bool& new_state);
+		bool get_button_state(const std::string& internal_name);
+
+		void add_pop_up_window(const Simple2D::Context& ctx, int end_pos_x, int width, int height, const Simple2D::Colour& colour, const Simple2D::Colour& background_colour, const std::string& title, const std::string& internal_name, const std::string& bound_button_internal_name);
+		
+		void set_pop_up_window_direction(const std::string& internal_name, bool new_direction);
+		bool get_pop_up_window_direction(const std::string& internal_name);
 
 		void draw_menu_bar(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx);
 	};
