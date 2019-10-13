@@ -5,7 +5,7 @@ namespace Simple2D {
 	:
 	width(0),
 	height(0),
-	blending_mode(0),
+	blending_mode(1),
 	texture(nullptr, SDL_DestroyTexture) {}
 
 	Sprite::Sprite(const Context& ctx, const char* texture_file) : texture(nullptr, SDL_DestroyTexture) {

@@ -102,8 +102,13 @@ namespace Simple2D {
 			width_total += width;
 			height_total = height;
 		}
+		width_total += space_width*(split_input.size()-1);
 		if(text[text.length()-1] == ' ') {
 			width_total -= space_width;
 		}
+	}
+
+	int Text_context::get_space_length() {
+		return space_width;
 	}
 }

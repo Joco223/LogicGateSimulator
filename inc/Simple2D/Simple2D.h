@@ -18,6 +18,10 @@ namespace Simple2D {
 		Colour operator - (const unsigned char& other) {
 			return {(unsigned char)(red - other), (unsigned char)(green - other), (unsigned char)(blue - other), alpha};
 		}
+
+		Colour operator + (const unsigned char& other) {
+			return {(unsigned char)(red + other), (unsigned char)(green + other), (unsigned char)(blue + other), alpha};
+		}
 	};
 
 	enum blending_modes {

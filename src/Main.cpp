@@ -38,6 +38,10 @@ int main() {
 	main_bar.add_button_sprite(ctx, "wire_icon.png", "wire_button", {200, 200, 200, 255});
 	main_bar.add_button_text_sprite(text_ctx, ctx, "chip_icon.png", "Chips", "chip_button", {200, 200, 200, 255});
 	main_bar.add_pop_up_window(ctx, 10, 550, 350, {20, 20, 20, 255}, {10, 10, 10, 100}, "Chips", "chips_pop_up_window", "chip_button");
+	main_bar.add_pop_up_window_button(ctx, "chip_icon.png", "Test chip 1", "chips_pop_test_chip1", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
+	main_bar.add_pop_up_window_button(ctx, "chip2_icon.png", "Test chip 2", "chips_pop_test_chip2", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
+	main_bar.add_pop_up_window_button(ctx, "chip3_icon.png", "Test chip 3", "chips_pop_test_chip3", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
+	main_bar.add_pop_up_window_button(ctx, "chip4_icon.png", "Test chip 4", "chips_pop_test_chip4", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
 
 	while(!ctx.check_exit()) {
 		ctx.clear();
@@ -51,7 +55,7 @@ int main() {
 		std::optional<Simple2D::mouse_button_e> mouse_button_event = ctx.check_mouse_button();
 		if(mouse_button_event) {
 			camera.update_position(*mouse_button_event);
-			gui.handle_mouse_click(text_ctx, ctx, *mouse_button_event);
+			gui.handle_mouse_click(*mouse_button_event);
 		}
 
 		camera.move_camera(rel_x, rel_y);
@@ -74,6 +78,38 @@ int main() {
 					std::cout << "Chip button was pressed with button: " << gui_event.event_desc_1 << '\n';
 					main_bar.set_button_state("chip_button", !main_bar.get_button_state("chip_button"));
 					main_bar.set_pop_up_window_direction("chips_pop_up_window", !main_bar.get_pop_up_window_direction("chips_pop_up_window"));
+				}
+			}else if(gui_event.source == "chips_pop_test_chip1") {
+				if(gui_event.event_type == Simple2D::MOUSE_DOWN && gui_event.event_desc_bool) {
+					std::cout << "Tile button 1 has been pressed with button: " << gui_event.event_desc_1 << '\n';
+					main_bar.set_pop_up_tile_button_state("chips_pop_up_window", "chips_pop_test_chip1", true);
+				}else{
+					std::cout << "Tile button 1 has been released with button: " << gui_event.event_desc_1 << '\n';
+					main_bar.set_pop_up_tile_button_state("chips_pop_up_window", "chips_pop_test_chip1", false);
+				}
+			}else if(gui_event.source == "chips_pop_test_chip2") {
+				if(gui_event.event_type == Simple2D::MOUSE_DOWN && gui_event.event_desc_bool) {
+					std::cout << "Tile button 2 has been pressed with button: " << gui_event.event_desc_1 << '\n';
+					main_bar.set_pop_up_tile_button_state("chips_pop_up_window", "chips_pop_test_chip2", true);
+				}else{
+					std::cout << "Tile button 2 has been released with button: " << gui_event.event_desc_1 << '\n';
+					main_bar.set_pop_up_tile_button_state("chips_pop_up_window", "chips_pop_test_chip2", false);
+				}
+			}else if(gui_event.source == "chips_pop_test_chip3") {
+				if(gui_event.event_type == Simple2D::MOUSE_DOWN && gui_event.event_desc_bool) {
+					std::cout << "Tile button 3 has been pressed with button: " << gui_event.event_desc_1 << '\n';
+					main_bar.set_pop_up_tile_button_state("chips_pop_up_window", "chips_pop_test_chip3", true);
+				}else{
+					std::cout << "Tile button 3 has been released with button: " << gui_event.event_desc_1 << '\n';
+					main_bar.set_pop_up_tile_button_state("chips_pop_up_window", "chips_pop_test_chip3", false);
+				}
+			}else if(gui_event.source == "chips_pop_test_chip4") {
+				if(gui_event.event_type == Simple2D::MOUSE_DOWN && gui_event.event_desc_bool) {
+					std::cout << "Tile button 4 has been pressed with button: " << gui_event.event_desc_1 << '\n';
+					main_bar.set_pop_up_tile_button_state("chips_pop_up_window", "chips_pop_test_chip4", true);
+				}else{
+					std::cout << "Tile button 4 has been released with button: " << gui_event.event_desc_1 << '\n';
+					main_bar.set_pop_up_tile_button_state("chips_pop_up_window", "chips_pop_test_chip4", false);
 				}
 			}
 			gui_event = gui.peek_event_stack();

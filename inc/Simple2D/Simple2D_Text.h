@@ -68,5 +68,6 @@ namespace Simple2D {
 		void draw_text(const Context& ctx, int x, int y, const std::string& text, int size);
 		void draw_text(const Context& ctx, int x, int y, const std::string& text, int size, Simple2D::Colour c);
 		void get_text_size(const Context& ctx, int& width_total, int& height_total, const std::string& text, int size);
+		int get_space_length();
 	};
 }
