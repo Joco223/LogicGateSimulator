@@ -38,7 +38,7 @@ int main() {
 	gui.add_menu_bar(&main_bar);
 	main_bar.add_button_sprite(ctx, "assets/wire_icon.png", "wire_button", {200, 200, 200, 255});
 	main_bar.add_button_text_sprite(text_ctx, ctx, "assets/chip_icon.png", "Chips", "chip_button", {200, 200, 200, 255});
-	main_bar.add_pop_up_window(ctx, 10, 550, 350, 20, {20, 20, 20, 255}, {10, 10, 10, 100}, "Chips", "chips_pop_up_window", "chip_button");
+	main_bar.add_pop_up_window(ctx, 10, 550, 350, 20, {20, 20, 20, 255}, {15, 15, 15, 100}, "Chips", "chips_pop_up_window", "chip_button");
 	main_bar.add_pop_up_window_button(ctx, "assets/chip_icon.png", "Test chip 1", "test_chip1", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
 	main_bar.add_pop_up_window_button(ctx, "assets/chip2_icon.png", "Test chip 2", "test_chip2", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
 	main_bar.add_pop_up_window_button(ctx, "assets/chip4_icon.png", "Test chip 3", "test_chip3", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
