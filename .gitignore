@@ -5,3 +5,7 @@
 *.json
 *.sh
 LGS
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
+MakeFile

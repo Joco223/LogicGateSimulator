@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Simple2D/Simple2D.h"
-#include "Simple2D/Simple2D_Sprite.h"
-#include "Simple2D/Simple2D_Text.h"
+#include "Simple2D.h"
+#include "Simple2D_Sprite.h"
+#include "Simple2D_Text.h"
 
 #include <iostream>
 #include <vector>

@@ -1,8 +1,8 @@
 #define SDL_MAIN_HANDLED
 
-#include "Simple2D/Simple2D.h"
-#include "Simple2D/Simple2D_Sprite.h"
-#include "Simple2D/Simple2D_Text.h"
+#include "Simple2D.h"
+#include "Simple2D_Sprite.h"
+#include "Simple2D_Text.h"
 
 #include "Sandbox.h"
 #include "Camera.h"

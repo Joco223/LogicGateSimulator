@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "Simple2D/Simple2D.h"
+#include "Simple2D.h"
 
 class Camera {
 private:
