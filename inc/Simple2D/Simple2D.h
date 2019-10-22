@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <math.h>
 #include <algorithm>
 #include <iostream>
@@ -196,7 +196,8 @@ namespace Simple2D {
 
 	class Context {
 	private:
-		int width, height, blending_mode, aa_mode;
+		Uint32 current_time;
+		int width, height, blending_mode, aa_mode, fps_cap, frame_delay;
 		float rendering_scale;
 		bool vsync;
 		Colour window_colour;
@@ -211,9 +212,11 @@ namespace Simple2D {
 	public:
 		Context(int window_width, int window_height, const char* window_name_);
 
-		void clear() const;
+		void clear();
 		void draw() const;
+		void flush() const;
 		void set_window_colour(Colour w_colour);
+		Colour get_window_colour();
 
 		std::optional<keyboard_e> check_keyboard();
 		std::optional<mouse_motion_e> check_mouse_motion();
@@ -234,11 +237,17 @@ namespace Simple2D {
 		void set_aa_mode(int new_aa_mode);
 		int  get_aa_mode() const;
 
-		SDL_Renderer* get_renderer() const;
+		void set_fps_cap(int new_fps_cap);
+		int  get_fps_cap() const;
 
-		void draw_rect(int x, int y, int w, int h, Colour c, bool filled) const;
-		void draw_line(int x1, int y1, int x2, int y2, Colour c) const;
-		void draw_square_line(int x1, int y1, int x2, int y2, Colour c) const;
-		void draw_circle(int x1, int y2, int radius, Colour c) const;
+		Uint32 get_current_time() const;
+
+		SDL_Renderer* get_renderer() const;
+		void set_render_target(SDL_Texture* target_texture) const;
+
+		void draw_rect(float x, float y, float w, float h, Colour c, bool filled) const;
+		void draw_line(float x1, float y1, float x2, float y2, Colour c) const;
+		void draw_square_line(float x1, float y1, float x2, float y2, Colour c) const;
+		void draw_circle(float x1, float y2, int radius, Colour c) const;
 	};
 }

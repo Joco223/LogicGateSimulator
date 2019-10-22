@@ -10,7 +10,7 @@ namespace GUI {
 		height(0),
 		clicked(false) {}
 
-	button::button(int pos_x_, int pos_y_, int height_, const std::string& internal_name_, const Simple2D::Colour& regular_colour_, const Simple2D::Colour& clicked_colour_)
+	button::button(float pos_x_, float pos_y_, float height_, const std::string& internal_name_, const Simple2D::Colour& regular_colour_, const Simple2D::Colour& clicked_colour_)
 		:
 		pos_x(pos_x_),
 		pos_y(pos_y_),
@@ -22,8 +22,11 @@ namespace GUI {
 		clicked_colour(clicked_colour_) {}
 
 	void button::add_text(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name) {
-		int old_height = height;
-		text_ctx.get_text_size(ctx, width, height, display_name, height/1.3333);
+		float old_height = height;
+		int tmp_w = 0;
+		int tmp_h = 0;
+		text_ctx.get_text_size(ctx, tmp_w, tmp_h, display_name, height/1.33333);
+		width = tmp_w;
 		height = old_height;
 	}
 
@@ -33,12 +36,13 @@ namespace GUI {
 	}
 
 	void button::add_text_sprite(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name_, const char* sprite_path) {
-		int old_height = height;
 		display_name = display_name_;
 		sprite = Simple2D::Sprite(ctx, sprite_path);
-		text_ctx.get_text_size(ctx, width, height, display_name, height/1.3333);
-		width += 6 + height;
-		height = old_height;
+		int tmp_w = 0;
+		int tmp_h = 0;
+		text_ctx.get_text_size(ctx, tmp_w, tmp_h, display_name, height/1.33333);
+		width = tmp_w;
+		width += 6 + tmp_h;
 	}
 
 	void button::set_clicked(const bool& new_clicked) {
@@ -57,7 +61,7 @@ namespace GUI {
 			ctx.draw_rect(pos_x-2, pos_y, width+3, height, regular_colour - 10, true);
 			ctx.draw_rect(pos_x, pos_y, width, height, regular_colour, true);
 		}
-		int total_size = 0;
+		float total_size = 0;
 
 		if(sprite.get_sprite_width() > 0) {
 			sprite.draw(ctx, pos_x+2, pos_y+2, height-4, height-4);
@@ -92,15 +96,15 @@ namespace GUI {
 		}
 	}
 
-	int button::get_button_width() const {
+	float button::get_button_width() const {
 		return width;
 	}
 
-	int button::get_pos_x() const {
+	float button::get_pos_x() const {
 		return pos_x;
 	}
 
-	int button::get_pos_y() const {
+	float button::get_pos_y() const {
 		return pos_y;
 	}
 
@@ -112,7 +116,7 @@ namespace GUI {
 		height(0),
 		clicked(false) {}
 
-	tile_button::tile_button(const Simple2D::Context& ctx, int pos_x_, int pos_y_, int width_, int height_, const char* sprite_path, const std::string& display_name_, const std::string& internal_name_, const Simple2D::Colour& regular_colour_, const Simple2D::Colour& clicked_colour_) 
+	tile_button::tile_button(const Simple2D::Context& ctx, float pos_x_, float pos_y_, float width_, float height_, const char* sprite_path, const std::string& display_name_, const std::string& internal_name_, const Simple2D::Colour& regular_colour_, const Simple2D::Colour& clicked_colour_) 
 		:
 		pos_x(pos_x_),
 		pos_y(pos_y_),
@@ -134,29 +138,29 @@ namespace GUI {
 		return clicked;
 	}
 
-	void tile_button::draw_button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx) {
+	void tile_button::draw_button(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, int offset_y) {
 		if(clicked)	{
-			ctx.draw_rect(pos_x, pos_y, width, height, clicked_colour+10, true);
-			ctx.draw_rect(pos_x+2, pos_y+2, width-4, height-4, clicked_colour, true);
+			ctx.draw_rect(pos_x-2, pos_y + offset_y, width+4, height, clicked_colour+10, true);
+			ctx.draw_rect(pos_x+2, pos_y+2 + offset_y, width-4, height-4, clicked_colour, true);
 		}else{
-			ctx.draw_rect(pos_x, pos_y, width, height, regular_colour+10, true);
-			ctx.draw_rect(pos_x+2, pos_y+2, width-4, height-4, regular_colour, true);
+			ctx.draw_rect(pos_x-2, pos_y + offset_y, width+4, height, regular_colour+10, true);
+			ctx.draw_rect(pos_x+2, pos_y+2 + offset_y, width-4, height-4, regular_colour, true);
 		}
 
 		int text_width = 0;
 		int text_height = 0;
-		text_ctx.get_text_size(ctx, text_width, text_height, display_name, (height/6)/1.333);
+		text_ctx.get_text_size(ctx, text_width, text_height, display_name, (height/6)/1.33333);
 
-		text_ctx.draw_text(ctx, pos_x+(width/2)-text_width/2, (pos_y+height)-text_height-4, display_name, (height/6)/1.333);
+		text_ctx.draw_text(ctx, pos_x+(width/2)-text_width/2, (pos_y+height)-text_height-4 + offset_y, display_name, (height/6)/1.33333);
 
-		int sprite_height = 4*height/6;
+		float sprite_height = 4*height/6;
 		float ratio = (float)sprite.get_sprite_width()/(float)sprite.get_sprite_height();
-		int sprite_width = ratio*sprite_height;
+		float sprite_width = ratio*sprite_height;
 		if(sprite_width > width-4) {
 			sprite_width /= (float)sprite_width/(float)(width-4);
 			sprite_height /= (float)sprite_width/(float)(width-4); 
 		}
-		sprite.draw(ctx, pos_x+(width/2)-(sprite_width/2), pos_y+height/12, sprite_width, sprite_height);
+		sprite.draw(ctx, pos_x+(width/2)-(sprite_width/2), pos_y+height/12 + offset_y, sprite_width, sprite_height);
 	}
 
 	void tile_button::detect_button_click(GUI& gui_parent, const Simple2D::mouse_button_e& mouse_button_event) {
@@ -187,10 +191,13 @@ namespace GUI {
 		width(0),
 		height(0),
 		animation_step(0),
+		old_animation_step(0),
+		animation_time(0),
+		current_scroll(0),
 		direction(false),
 		extended(false) {}
 
-	pop_up_window::pop_up_window(const Simple2D::Context& ctx, int pos_x_, int pos_y_, int scaled_pos_x_, int scaled_width_, int width_, int height_, const Simple2D::Colour& colour_, const Simple2D::Colour& background_colour_, const std::string& title_, const std::string& internal_name_)
+	pop_up_window::pop_up_window(const Simple2D::Context& ctx, float pos_x_, float pos_y_, float scaled_pos_x_, float scaled_width_, float width_, float height_, int animation_time_, const Simple2D::Colour& colour_, const Simple2D::Colour& background_colour_, const std::string& title_, const std::string& internal_name_)
 		:
 		pos_x(pos_x_),
 		pos_y(pos_y_),
@@ -199,6 +206,9 @@ namespace GUI {
 		width(width_),
 		height(height_),
 		animation_step(0),
+		old_animation_step(0),
+		animation_time(animation_time_),
+		current_scroll(0),
 		direction(false),
 		extended(false),
 		colour(colour_),
@@ -219,50 +229,64 @@ namespace GUI {
 	}
 
 	void pop_up_window::draw_scale_up(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx) {
-		int start_x = pos_x-((pos_x-scaled_pos_x)/20)*animation_step;
-		int new_width = width+((scaled_width-width)/20)*animation_step;
-		int start_y = pos_y-((pos_y-height)/20)*animation_step;
-		int new_height = pos_y-start_y;
+		float start_x = pos_x-((pos_x-scaled_pos_x)/animation_time)*animation_step;
+		float new_width = width+((scaled_width-width)/animation_time)*animation_step;
+		float start_y = pos_y-((pos_y-height)/animation_time)*animation_step;
+		float new_height = pos_y-start_y;
 
-		ctx.draw_rect(start_x, start_y, new_width, new_height*0.05, colour, true);
-		ctx.draw_rect(start_x, start_y+new_height*0.05, new_width, new_height*0.95, background_colour, true);
-
-		text_ctx.draw_text(ctx, start_x+2, start_y+2, title, (new_height*0.05)/1.3333);
+		ctx.draw_rect(start_x, start_y+new_height*0.05, floor(new_width), ceil(new_height*0.95), background_colour, true);
 		
-		if(animation_step < 21) {
+		old_animation_step = animation_step;
+		if(animation_step < animation_time) {
 			animation_step++;
 		}else{
 			for(auto& i : buttons) {
-				i.second.draw_button(text_ctx, ctx);
+				i.second.draw_button(text_ctx, ctx, current_scroll);
 			}
 			extended = true;
 		}
+
+		ctx.draw_rect(start_x, start_y, floor(new_width), ceil(new_height*0.05), colour, true);
+		text_ctx.draw_text(ctx, start_x+2, start_y+2, title, (new_height*0.05)/1.33333);
 	}
 
 	void pop_up_window::draw_scale_down(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx) {
-		int start_x = pos_x-((pos_x-scaled_pos_x)/20)*animation_step;
-		int new_width = width+((scaled_width-width)/20)*animation_step;
-		int start_y = pos_y-((pos_y-height)/20)*animation_step;
-		int new_height = pos_y-start_y;
+		float start_x = pos_x-((pos_x-scaled_pos_x)/animation_time)*animation_step;
+		float new_width = width+((scaled_width-width)/animation_time)*animation_step;
+		float start_y = pos_y-((pos_y-height)/animation_time)*animation_step;
+		float new_height = pos_y-start_y;
 
-		ctx.draw_rect(start_x, start_y, new_width, new_height*0.05, colour, true);
-		ctx.draw_rect(start_x, start_y+new_height*0.05, new_width, new_height*0.95, background_colour, true);
-
-		text_ctx.draw_text(ctx, start_x+2, start_y+2, title, (new_height*0.05)/1.3333);
-		
+		ctx.draw_rect(start_x, start_y+new_height*0.05, floor(new_width), ceil(new_height*0.95), background_colour, true);
+	
+		old_animation_step = animation_step;
 		if(animation_step > 0) {
 			animation_step--;
 		}else{
 			extended = false;
 		}
+
+		ctx.draw_rect(start_x, start_y, floor(new_width), ceil(new_height*0.05), colour, true);
+		text_ctx.draw_text(ctx, start_x+2, start_y+2, title, (new_height*0.05)/1.33333);
+	}
+
+	void pop_up_window::draw_mask(const Simple2D::Context& ctx) {
+		float start_x = pos_x-((pos_x-scaled_pos_x)/animation_time)*old_animation_step;
+		float new_width = width+((scaled_width-width)/animation_time)*old_animation_step;
+		float start_y = pos_y-((pos_y-height)/animation_time)*old_animation_step;
+		float new_height = pos_y-start_y;
+
+		ctx.draw_rect(start_x, start_y, floor(new_width), ceil(new_height*0.05), {255, 255, 255, 255}, true);
+		ctx.draw_rect(start_x, start_y+new_height*0.05, floor(new_width), ceil(new_height*0.95), {255, 255, 255, 255}, true);
 	}
 
 	void pop_up_window::add_tile_button(const Simple2D::Context& ctx, const char* sprite_path, const std::string& display_name, const std::string& internal_name, const Simple2D::Colour& regular_colour_, const Simple2D::Colour& clicked_colour_) {
-		int start_x = pos_x-((pos_x-scaled_pos_x)/20)*20 + (buttons.size() % 3) * ceil((scaled_width-20)/3);
-		int start_y = pos_y-((pos_y-height)/20)*20;
-		int new_height = pos_y-start_y;
-		start_y += ceil(buttons.size() / 3) * ceil(new_height/3);
-		buttons.emplace(std::make_pair(internal_name, tile_button(ctx, start_x, start_y+1, ((scaled_width-20)/3), (new_height/3), sprite_path, display_name, internal_name, regular_colour_, clicked_colour_)));
+		float start_x = scaled_pos_x + (buttons.size() % 3) * ceil(scaled_width/3);
+		float start_y = height;
+		float new_height = pos_y-height;
+		start_y += ceil(0.05*new_height);
+		new_height = pos_y-start_y;
+		start_y += floor(buttons.size() / 3) * (new_height/3);
+		buttons.emplace(std::make_pair(internal_name, tile_button(ctx, start_x, start_y, (scaled_width/3), (new_height/3), sprite_path, display_name, internal_name, regular_colour_, clicked_colour_)));
 	}
 
 	void pop_up_window::detect_button_click(GUI& gui_parent, const Simple2D::mouse_button_e& mouse_button_event) {
@@ -273,6 +297,27 @@ namespace GUI {
 		}
 	}
 
+	void pop_up_window::detect_mouse_scroll(const Simple2D::mouse_wheel_e& mouse_wheel_event, int mouse_pos_x, int mouse_pos_y) {
+		float start_x = pos_x-((pos_x-scaled_pos_x)/animation_time)*animation_step;
+		float new_width = width+((scaled_width-width)/animation_time)*animation_step;
+		float start_y = pos_y-((pos_y-height)/animation_time)*animation_step;
+		float new_height = pos_y-start_y;
+
+		if(mouse_pos_x > start_x && mouse_pos_x < start_x+new_width) {
+			if(mouse_pos_y > start_y && mouse_pos_y < pos_y) {
+				current_scroll += mouse_wheel_event.y*8;
+
+				if(current_scroll > 0) {
+					current_scroll = 0;
+				}
+
+				if(current_scroll < (ceil((float)(buttons.size()) / 3.0f)-3) * -((0.95*new_height)/3)) {
+					current_scroll = (ceil((float)(buttons.size()) / 3.0f)-3) * -((0.95*new_height)/3);
+				}
+			}
+		}	
+	}
+
 	void pop_up_window::set_tile_button_state(const std::string& internal_name, const bool new_state) {
 		buttons[internal_name].set_clicked(new_state);
 	}
@@ -281,7 +326,7 @@ namespace GUI {
 		return buttons[internal_name].get_clicked();
 	}
 
-	menu_bar::menu_bar(int pos_x_, int pos_y_, int width_, int height_, const Simple2D::Colour& colour_)
+	menu_bar::menu_bar(float pos_x_, float pos_y_, float width_, float height_, const Simple2D::Colour& colour_)
 		:
 		pos_x(pos_x_),
 		pos_y(pos_y_),
@@ -326,8 +371,8 @@ namespace GUI {
 		return buttons[internal_name].get_clicked();
 	}
 
-	void menu_bar::add_pop_up_window(const Simple2D::Context& ctx, int end_pos_x, int width, int height, const Simple2D::Colour& colour, const Simple2D::Colour& background_colour, const std::string& title, const std::string& internal_name, const std::string& bound_button_internal_name) {
-		pop_up_windows.emplace(std::make_pair(internal_name, pop_up_window(ctx, buttons[bound_button_internal_name].get_pos_x(), buttons[bound_button_internal_name].get_pos_y(), end_pos_x, width, buttons[bound_button_internal_name].get_button_width(), height, colour, background_colour, title, internal_name)));
+	void menu_bar::add_pop_up_window(const Simple2D::Context& ctx, float end_pos_x, float width, float height, int animation_time, const Simple2D::Colour& colour, const Simple2D::Colour& background_colour, const std::string& title, const std::string& internal_name, const std::string& bound_button_internal_name) {
+		pop_up_windows.emplace(std::make_pair(internal_name, pop_up_window(ctx, buttons[bound_button_internal_name].get_pos_x(), buttons[bound_button_internal_name].get_pos_y(), end_pos_x, width, buttons[bound_button_internal_name].get_button_width(), height, animation_time, colour, background_colour, title, internal_name)));
 	}
 
 	void menu_bar::set_pop_up_window_direction(const std::string& internal_name, bool new_direction) {
@@ -350,6 +395,10 @@ namespace GUI {
 		return pop_up_windows[window_internal_name].get_tile_button_state(button_internal_name);
 	}
 
+	void menu_bar::check_pop_up_tile_scroll(const std::string& window_internal_name, const Simple2D::mouse_wheel_e& mouse_wheel_event, int mouse_pos_x, int mouse_pos_y) {
+		pop_up_windows[window_internal_name].detect_mouse_scroll(mouse_wheel_event, mouse_pos_x, mouse_pos_y);
+	}
+
 	void menu_bar::draw_menu_bar(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx) {
 		for(auto& i : pop_up_windows) {
 			if(i.second.get_direction()) {
@@ -366,7 +415,30 @@ namespace GUI {
 		}
 	}
 
-	GUI::GUI() {}
+	void menu_bar::draw_menu_bar_mask(const Simple2D::Context& ctx) {
+		ctx.draw_rect(pos_x, pos_y, width, height, {255, 255, 255, 255}, true);
+
+		for(auto& i : pop_up_windows) {
+			i.second.draw_mask(ctx);
+		}
+	}
+
+	GUI::GUI(Simple2D::Context& ctx, int width_, int height_)
+	:
+	width(width_),
+	height(height_) {
+		gui_texture = Simple2D::Sprite(ctx, width, height, Simple2D::S2D_BLENDING_ALPHA);
+		ctx.set_render_target(gui_texture.get_texture());
+		ctx.draw_rect(0, 0, width, height, {0, 0, 0, 0}, true);
+		ctx.set_render_target(nullptr);
+
+		gui_mask = Simple2D::Sprite(ctx, width, height, Simple2D::S2D_BLENDING_ALPHA);
+		ctx.set_render_target(gui_mask.get_texture());
+		ctx.draw_rect(0, 0, width, height, {0, 0, 0, 0}, true);
+		ctx.set_render_target(nullptr);
+
+		original_window_colour = ctx.get_window_colour();
+	}
 
 	void GUI::handle_mouse_click(const Simple2D::mouse_button_e& mouse_button_event) {
 		for(unsigned int i = 0; i < menu_bars.size(); i++) {
@@ -392,10 +464,37 @@ namespace GUI {
 		menu_bars.push_back(std::unique_ptr<menu_bar>(new_menu_bar));
 	}
 
-	void GUI::draw_gui(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx) {
-		for(unsigned int i = 0; i < menu_bars.size(); i++) {
-			menu_bars[i].get()->draw_menu_bar(text_ctx, ctx);
+	void GUI::draw_gui(Simple2D::Text_context& text_ctx, Simple2D::Context& ctx) {
+		ctx.set_render_target(gui_texture.get_texture());
+		gui_texture.set_blending_mode(Simple2D::S2D_BLENDING_ALPHA);
+
+		ctx.set_window_colour({0, 0, 0, 0});
+		ctx.clear();
+		ctx.set_window_colour(original_window_colour);
+
+		for(auto& i : menu_bars) {
+			i.get()->draw_menu_bar(text_ctx, ctx);
 		}
+
+		ctx.set_render_target(gui_mask.get_texture());
+		gui_mask.set_blending_mode(Simple2D::S2D_BLENDING_ALPHA);
+
+		ctx.set_window_colour({0, 0, 0, 0});
+		ctx.clear();
+		ctx.set_window_colour(original_window_colour);
+
+		for(auto& i : menu_bars) {
+			i.get()->draw_menu_bar_mask(ctx);
+		}
+
+		int old_blending_mode = ctx.get_blending_mode();
+		gui_texture.set_blending_mode(Simple2D::S2D_BLENDING_MOD);
+		ctx.set_blending_mode(Simple2D::S2D_BLENDING_MOD);
+		gui_texture.draw(ctx, 0, 0, width, height);
+		ctx.set_blending_mode(old_blending_mode);
+
+		ctx.set_render_target(nullptr);
+		gui_mask.draw(ctx, 0, 0, width, height);
 	}
 
 }

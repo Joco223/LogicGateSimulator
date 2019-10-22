@@ -8,6 +8,16 @@ namespace Simple2D {
 	blending_mode(1),
 	texture(nullptr, SDL_DestroyTexture) {}
 
+	Sprite::Sprite(const Context& ctx, int width_, int height_, int blending_mode_)
+	:
+	width(width_),
+	height(height_),
+	blending_mode(blending_mode_),
+	texture(nullptr, SDL_DestroyTexture) {
+		texture.reset(SDL_CreateTexture(ctx.get_renderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height));
+		SDL_SetTextureBlendMode(texture.get(), get_blending_mode_internal());
+	}
+	
 	Sprite::Sprite(const Context& ctx, const char* texture_file) : texture(nullptr, SDL_DestroyTexture) {
 		texture.reset(IMG_LoadTexture(ctx.get_renderer(), texture_file));
 		if(texture.get() == nullptr) error_out("Unable to load texture.");
@@ -50,6 +60,10 @@ namespace Simple2D {
 
 	int Sprite::get_blending_mode() {
 		return blending_mode;
+	}
+
+	SDL_Texture* Sprite::get_texture() {
+		return texture.get();
 	}
 
 	void Sprite::draw(const Context& ctx, int x, int y, int size_x, int size_y) {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <SDL.h>
-#include <SDL_image.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <iostream>
 #include <memory>
 
@@ -19,6 +19,7 @@ namespace Simple2D {
 		SDL_BlendMode get_blending_mode_internal();
 	public:
 		Sprite();
+		Sprite(const Context& ctx, int width, int height, int blending_mode);
 		Sprite(const Context& ctx, const char* texture_file);
 
 		void load_sprite(const Context& ctx,  const char* texture_file);
@@ -27,6 +28,8 @@ namespace Simple2D {
 
 		void set_blending_mode(int new_blending_mode);
 		int  get_blending_mode();
+
+		SDL_Texture* get_texture();
 
 		void draw(const Context& ctx, int x, int y, int size_x, int size_y);
 		void draw_rotated(const Context& ctx, int x, int y, int size_x, int size_y, double angle);

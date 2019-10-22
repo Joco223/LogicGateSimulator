@@ -8,10 +8,13 @@ namespace Simple2D {
 	}
 
 	Context::Context(int window_width, int window_height, const char* window_name_)
-	: width(window_width),
+	: current_time(0),
+		width(window_width),
 		height(window_height),
 		blending_mode(0),
 		aa_mode(0),
+		fps_cap(60),
+		frame_delay(0),
 		rendering_scale(1),
 		vsync(false),
 		window_colour({0, 0, 0, 255}),
@@ -22,7 +25,7 @@ namespace Simple2D {
 		window.reset(SDL_CreateWindow(window_name_, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_width, window_height, SDL_WINDOW_SHOWN));
 		if(window.get() == nullptr) error_out("Unable to create the window.");
 
-		renderer.reset(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED));
+		renderer.reset(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE));
 		if(renderer.get() == nullptr) error_out("Unable to create a renderer.");
 
 		if(SDL_RenderSetScale(renderer.get(), rendering_scale, rendering_scale) < 0) error_out("Unable to set renderer scale.");
@@ -30,6 +33,8 @@ namespace Simple2D {
 		if(SDL_SetRenderDrawBlendMode(renderer.get(), SDL_BLENDMODE_NONE) < 0) error_out("Unable to set renderer blending mode.");
 
 		if(SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, std::to_string(aa_mode).c_str()) < 0) error_out("Unable to set renderer AA mode.");
+
+		frame_delay = 1000 / fps_cap;
 	}
 
 	SDL_BlendMode Context::get_blending_mode_internal() {
@@ -43,13 +48,23 @@ namespace Simple2D {
 		return SDL_BLENDMODE_NONE;
 	}
 
-	void Context::clear() const {
+	void Context::clear() {
 		if(SDL_RenderClear(renderer.get()) < 0) error_out("Unable to clean the window.");
 	}
 
 	void Context::draw() const {
 		if(SDL_SetRenderDrawColor(renderer.get(), window_colour.red, window_colour.green, window_colour.blue, window_colour.alpha) < 0) error_out("Unable to render to the window.");
 		SDL_RenderPresent(renderer.get());
+		
+		int frame_time = SDL_GetTicks() - current_time;
+
+		if(frame_delay > frame_time) {
+			SDL_Delay(frame_delay - frame_time);
+		}
+	}
+
+	void Context::flush() const {
+		if(SDL_RenderFlush(renderer.get()) < 0) error_out("Unable to flush the renderer.");
 	}
 
 	std::optional<keyboard_e> Context::check_keyboard() {
@@ -108,6 +123,7 @@ namespace Simple2D {
 	}
 
 	bool Context::check_exit() {
+		current_time = SDL_GetTicks();
 		SDL_PumpEvents();
 		if(SDL_PeepEvents(&event, 1, SDL_PEEKEVENT, SDL_QUIT, SDL_QUIT) > 0) {
 			SDL_PeepEvents(&event, 1, SDL_GETEVENT, SDL_QUIT, SDL_QUIT);
@@ -128,14 +144,19 @@ namespace Simple2D {
 
 	void Context::set_window_colour(Colour new_window_colour) {
 		window_colour = new_window_colour;
+		if(SDL_SetRenderDrawColor(renderer.get(), window_colour.red, window_colour.green, window_colour.blue, window_colour.alpha) < 0) error_out("Unable to set window colour.");
+	}
+
+	Colour Context::get_window_colour() {
+		return window_colour;
 	}
 
 	void Context::set_vsync(bool vsync_mode) {
 		renderer.reset();
 		if(vsync_mode) {
-			renderer.reset(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
+			renderer.reset(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE));
 		}else{
-			renderer.reset(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED));
+			renderer.reset(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE));
 		}
 		if(renderer.get() == nullptr) error_out("Unable to create renderer.");
 		vsync = vsync_mode;
@@ -175,40 +196,58 @@ namespace Simple2D {
 		return aa_mode;
 	}
 
+	void Context::set_fps_cap(int new_fps_cap) {
+		if(new_fps_cap == 0) {std::cerr << "ERROR, can't set FPS cap to 0.\n"; return;}
+		fps_cap = new_fps_cap;
+		frame_delay = 1000 / fps_cap;
+	}
+
+	int Context::get_fps_cap() const {
+		return fps_cap;
+	}
+
+	Uint32 Context::get_current_time() const {
+		return current_time;
+	}
+
 	SDL_Renderer* Context::get_renderer() const {
 		return renderer.get();
 	}
 
-	void Context::draw_rect(int x, int y, int w, int h, Colour c, bool filled) const {
+	void Context::set_render_target(SDL_Texture* target_texture) const {
+		if(SDL_SetRenderTarget(renderer.get(), target_texture) < 0) error_out("Unable to set render target.");
+	}
+
+	void Context::draw_rect(float x, float y, float w, float h, Colour c, bool filled) const {
 		if(SDL_SetRenderDrawColor(renderer.get(), c.red, c.green, c.blue, c.alpha) < 0) error_out("Unable to set renderer draw colour.");
-		SDL_Rect rect = {x, y, w, h};
+		SDL_FRect rect = {x, y, w, h};
 		if(filled) {
-			if(SDL_RenderFillRect(renderer.get(), &rect) < 0) error_out("Unable to draw filled rectangle.");
+			if(SDL_RenderFillRectF(renderer.get(), &rect) < 0) error_out("Unable to draw filled rectangle.");
 		}else{
-			if(SDL_RenderDrawRect(renderer.get(), &rect) < 0) error_out("Unable to draw rectangle.");
+			if(SDL_RenderDrawRectF(renderer.get(), &rect) < 0) error_out("Unable to draw rectangle.");
 		}
 	}
 
-	void Context::draw_line(int x1, int y1, int x2, int y2, Colour c) const {
+	void Context::draw_line(float x1, float y1, float x2, float y2, Colour c) const {
 		if(SDL_SetRenderDrawColor(renderer.get(), c.red, c.green, c.blue, c.alpha) < 0) error_out("Unable to set renderer draw colour.");
-		if(SDL_RenderDrawLine(renderer.get(), x1, y1, x2, y2) < 0) error_out("Unable to draw line.");
+		if(SDL_RenderDrawLineF(renderer.get(), x1, y1, x2, y2) < 0) error_out("Unable to draw line.");
 	}
 
-	void Context::draw_square_line(int x1, int y1, int x2, int y2, Colour c) const {
+	void Context::draw_square_line(float x1, float y1, float x2, float y2, Colour c) const {
 		if(SDL_SetRenderDrawColor(renderer.get(), c.red, c.green, c.blue, c.alpha) < 0) error_out("Unable to set renderer draw colour.");
 
 		if(x2 > x1) {
-			if(SDL_RenderDrawLine(renderer.get(), x1, y1, x1+(abs(x1-x2))/2, y1) < 0) error_out("Unable to draw line.");
-			if(SDL_RenderDrawLine(renderer.get(), x1+(abs(x1-x2))/2, y1, x1+(abs(x1-x2))/2, y2) < 0) error_out("Unable to draw line.");
-			if(SDL_RenderDrawLine(renderer.get(), x1+(abs(x1-x2))/2, y2, x2, y2) < 0) error_out("Unable to draw line.");
+			if(SDL_RenderDrawLineF(renderer.get(), x1, y1, x1+(abs(x1-x2))/2, y1) < 0) error_out("Unable to draw line.");
+			if(SDL_RenderDrawLineF(renderer.get(), x1+(abs(x1-x2))/2, y1, x1+(abs(x1-x2))/2, y2) < 0) error_out("Unable to draw line.");
+			if(SDL_RenderDrawLineF(renderer.get(), x1+(abs(x1-x2))/2, y2, x2, y2) < 0) error_out("Unable to draw line.");
 		}else{
-			if(SDL_RenderDrawLine(renderer.get(), x1, y1, x1-(abs(x1-x2))/2, y1) < 0) error_out("Unable to draw line.");
-			if(SDL_RenderDrawLine(renderer.get(), x1-(abs(x1-x2))/2, y1, x1-(abs(x1-x2))/2, y2) < 0) error_out("Unable to draw line.");
-			if(SDL_RenderDrawLine(renderer.get(), x1-(abs(x1-x2))/2, y2, x2, y2) < 0) error_out("Unable to draw line.");
+			if(SDL_RenderDrawLineF(renderer.get(), x1, y1, x1-(abs(x1-x2))/2, y1) < 0) error_out("Unable to draw line.");
+			if(SDL_RenderDrawLineF(renderer.get(), x1-(abs(x1-x2))/2, y1, x1-(abs(x1-x2))/2, y2) < 0) error_out("Unable to draw line.");
+			if(SDL_RenderDrawLineF(renderer.get(), x1-(abs(x1-x2))/2, y2, x2, y2) < 0) error_out("Unable to draw line.");
 		}
 	}
 
-	void Context::draw_circle(int x1, int y1, int radius, Colour c) const {
+	void Context::draw_circle(float x1, float y1, int radius, Colour c) const {
 		if(SDL_SetRenderDrawColor(renderer.get(), c.red, c.green, c.blue, c.alpha) < 0) error_out("Unable to set renderer draw colour.");
 
 		int x = radius-1;
@@ -218,14 +257,14 @@ namespace Simple2D {
 		int err = dx - (radius << 1);
 
 		while (x >= y) {
-			if(SDL_RenderDrawPoint(renderer.get(), x1 + x, y1 + y) < 0) error_out("Unable to draw a point.");
-			if(SDL_RenderDrawPoint(renderer.get(), x1 + y, y1 + x) < 0) error_out("Unable to draw a point.");
-			if(SDL_RenderDrawPoint(renderer.get(), x1 - y, y1 + x) < 0) error_out("Unable to draw a point.");
-			if(SDL_RenderDrawPoint(renderer.get(), x1 - x, y1 + y) < 0) error_out("Unable to draw a point.");
-			if(SDL_RenderDrawPoint(renderer.get(), x1 - x, y1 - y) < 0) error_out("Unable to draw a point.");
-			if(SDL_RenderDrawPoint(renderer.get(), x1 - y, y1 - x) < 0) error_out("Unable to draw a point.");
-			if(SDL_RenderDrawPoint(renderer.get(), x1 + y, y1 - x) < 0) error_out("Unable to draw a point.");
-			if(SDL_RenderDrawPoint(renderer.get(), x1 + x, y1 - y) < 0) error_out("Unable to draw a point.");
+			if(SDL_RenderDrawPointF(renderer.get(), x1 + x, y1 + y) < 0) error_out("Unable to draw a point.");
+			if(SDL_RenderDrawPointF(renderer.get(), x1 + y, y1 + x) < 0) error_out("Unable to draw a point.");
+			if(SDL_RenderDrawPointF(renderer.get(), x1 - y, y1 + x) < 0) error_out("Unable to draw a point.");
+			if(SDL_RenderDrawPointF(renderer.get(), x1 - x, y1 + y) < 0) error_out("Unable to draw a point.");
+			if(SDL_RenderDrawPointF(renderer.get(), x1 - x, y1 - y) < 0) error_out("Unable to draw a point.");
+			if(SDL_RenderDrawPointF(renderer.get(), x1 - y, y1 - x) < 0) error_out("Unable to draw a point.");
+			if(SDL_RenderDrawPointF(renderer.get(), x1 + y, y1 - x) < 0) error_out("Unable to draw a point.");
+			if(SDL_RenderDrawPointF(renderer.get(), x1 + x, y1 - y) < 0) error_out("Unable to draw a point.");
 
 			if(err <= 0) {
 				y++;
