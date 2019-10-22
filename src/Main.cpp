@@ -39,15 +39,15 @@ int main() {
 	main_bar.add_button_sprite(ctx, "assets/wire_icon.png", "wire_button", {200, 200, 200, 255});
 	main_bar.add_button_text_sprite(text_ctx, ctx, "assets/chip_icon.png", "Chips", "chip_button", {200, 200, 200, 255});
 	main_bar.add_pop_up_window(ctx, 10, 550, 350, 20, {20, 20, 20, 255}, {15, 15, 15, 100}, "Chips", "chips_pop_up_window", "chip_button");
-	main_bar.add_pop_up_window_button(ctx, "assets/chip_icon.png", "Test chip 1", "test_chip1", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
-	main_bar.add_pop_up_window_button(ctx, "assets/chip2_icon.png", "Test chip 2", "test_chip2", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
-	main_bar.add_pop_up_window_button(ctx, "assets/chip4_icon.png", "Test chip 3", "test_chip3", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
-	main_bar.add_pop_up_window_button(ctx, "assets/chip3_icon.png", "Test chip 4", "test_chip4", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
-	main_bar.add_pop_up_window_button(ctx, "assets/chip_icon.png", "Test chip 5", "test_chip5", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
-	main_bar.add_pop_up_window_button(ctx, "assets/chip_icon.png", "Test chip 6", "test_chip6", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
-	main_bar.add_pop_up_window_button(ctx, "assets/chip_icon.png", "Test chip 7", "test_chip7", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
-	main_bar.add_pop_up_window_button(ctx, "assets/chip4_icon.png", "Test chip 8", "test_chip8", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
-	main_bar.add_pop_up_window_button(ctx, "assets/chip3_icon.png", "Test chip 9", "test_chip9", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
+	main_bar.add_pop_up_window_button(ctx, "assets/chip_icon.png",  "Test chip 1",  "test_chip1",  {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
+	main_bar.add_pop_up_window_button(ctx, "assets/chip2_icon.png", "Test chip 2",  "test_chip2",  {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
+	main_bar.add_pop_up_window_button(ctx, "assets/chip4_icon.png", "Test chip 3",  "test_chip3",  {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
+	main_bar.add_pop_up_window_button(ctx, "assets/chip3_icon.png", "Test chip 4",  "test_chip4",  {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
+	main_bar.add_pop_up_window_button(ctx, "assets/chip_icon.png",  "Test chip 5",  "test_chip5",  {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
+	main_bar.add_pop_up_window_button(ctx, "assets/chip_icon.png",  "Test chip 6",  "test_chip6",  {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
+	main_bar.add_pop_up_window_button(ctx, "assets/chip_icon.png",  "Test chip 7",  "test_chip7",  {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
+	main_bar.add_pop_up_window_button(ctx, "assets/chip4_icon.png", "Test chip 8",  "test_chip8",  {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
+	main_bar.add_pop_up_window_button(ctx, "assets/chip3_icon.png", "Test chip 9",  "test_chip9",  {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
 	main_bar.add_pop_up_window_button(ctx, "assets/chip4_icon.png", "Test chip 10", "test_chip10", {20, 20, 20, 255}, {200, 200, 200, 255}, "chips_pop_up_window");
 
 	while(!ctx.check_exit()) {
