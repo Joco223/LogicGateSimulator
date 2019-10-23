@@ -9,8 +9,9 @@ find_library(SDL2_IMAGE_LIB "SDL2_image")
 add_executable(lgs
 src/Main.cpp
 src/Camera.cpp
-src/GUI.cpp
 src/Sandbox.cpp
+src/GUI_Controller.cpp
+src/Simple2D/Simple2D_GUI.cpp
 src/Simple2D/Simple2D_Text.cpp
 src/Simple2D/Simple2D_Sprite.cpp
 src/Simple2D/Simple2D.cpp)
