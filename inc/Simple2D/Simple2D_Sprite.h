@@ -31,6 +31,8 @@ namespace Simple2D {
 
 		SDL_Texture* get_texture();
 
+		void set_alpha(unsigned char new_alpha);
+
 		void draw(const Context& ctx, int x, int y, int size_x, int size_y);
 		void draw_rotated(const Context& ctx, int x, int y, int size_x, int size_y, double angle);
 	};

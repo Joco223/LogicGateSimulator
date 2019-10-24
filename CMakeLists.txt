@@ -11,6 +11,8 @@ src/Main.cpp
 src/Camera.cpp
 src/Sandbox.cpp
 src/GUI_Controller.cpp
+src/Chip.cpp
+src/Asset_loader.cpp
 src/Simple2D/Simple2D_GUI.cpp
 src/Simple2D/Simple2D_Text.cpp
 src/Simple2D/Simple2D_Sprite.cpp

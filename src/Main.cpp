@@ -7,6 +7,8 @@
 #include "Sandbox.h"
 #include "Camera.h"
 #include "GUI_Controller.h"
+#include "Chip.h"
+#include "Asset_loader.h"
 
 #include <iostream>
 #include <string>
@@ -16,6 +18,8 @@
 constexpr int width                      = 1600;
 constexpr int height                     = 900;
 constexpr Simple2D::Colour window_colour = {50, 50, 50, 255};
+
+void placeholder() {}
 
 int main() {
 
@@ -27,13 +31,21 @@ int main() {
 	Simple2D::Text_context text_ctx("assets/Cascadia.ttf");
 
 	Sandbox sandbox(20, 20);
+
 	GUI_Controller gui_controller = GUI_Controller(ctx, width, height);
+
 	gui_controller.init_menu_bar(ctx, text_ctx);
+
+	Asset_loader asset_loader;
+	asset_loader.load_chips(ctx, "assets/chips/", gui_controller);
+
 	Camera camera = Camera();
 	int rel_x = 0;
 	int rel_y = 0;
 	int curr_mouse_x = 0;
 	int curr_mouse_y = 0;
+
+	
 
 	while(!ctx.check_exit()) {
 		ctx.clear();
@@ -46,6 +58,7 @@ int main() {
 			rel_y += mouse_motion_event->rel_y;
 			curr_mouse_x = mouse_motion_event->x;
 			curr_mouse_y = mouse_motion_event->y;
+			gui_controller.handle_mouse_move(*mouse_motion_event);
 			mouse_motion_event = ctx.check_mouse_motion();
 		}
 
@@ -60,11 +73,11 @@ int main() {
 			gui_controller.handle_mouse_scroll(*mouse_wheel_event, curr_mouse_x, curr_mouse_y);
 		}
 
-		gui_controller.handle_events();
+		gui_controller.handle_events(ctx);
 
 		camera.move_camera(rel_x, rel_y);
 
-		sandbox.draw_grid(camera.get_pos_x(), camera.get_pos_y(), ctx);
+		//sandbox.draw_grid(camera.get_pos_x(), camera.get_pos_y(), ctx);
 
 		gui_controller.draw_gui(ctx, text_ctx);
 

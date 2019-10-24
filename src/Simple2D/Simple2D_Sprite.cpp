@@ -66,6 +66,10 @@ namespace Simple2D {
 		return texture.get();
 	}
 
+	void Sprite::set_alpha(unsigned char new_alpha) {
+		SDL_SetTextureAlphaMod(texture.get(), new_alpha);
+	}
+
 	void Sprite::draw(const Context& ctx, int x, int y, int size_x, int size_y) {
 		SDL_Rect destination = {x, y, size_x, size_y};
 		if(SDL_RenderCopy(ctx.get_renderer(), texture.get(), nullptr, &destination) < 0) error_out("Unable to render sprite.");
