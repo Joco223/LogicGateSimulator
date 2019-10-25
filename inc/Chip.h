@@ -14,7 +14,7 @@ struct chip_connector {
 
 class Chip {
 private:
-	int pos_x, pos_y, width, height;
+	int pos_x, pos_y, width, height, angle;
 	std::string name, internal_name;
 	Simple2D::Sprite sprite;
 	std::vector<chip_connector> input_connectors;
@@ -39,5 +39,13 @@ public:
 
 	void set_sprite_alpha(unsigned char new_alpha);
 
-	void draw(const Simple2D::Context& ctx);
+	int get_pos_x() const;
+	int get_pos_y() const;
+
+	int get_sprite_width();
+	int get_sprite_height();
+
+	void set_angle(int new_angle);
+
+	void draw(const Simple2D::Context& ctx, int pos_x, int pos_y);
 };

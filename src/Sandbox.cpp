@@ -1,16 +1,14 @@
 #include "Sandbox.h"
 
-Sandbox::Sandbox(int x, int y) 
-	:
-	size_x(x),
-	size_y(y) {}
+Sandbox::Sandbox() {}
 
-void Sandbox::draw_grid(int offset_x, int offset_y, const Simple2D::Context& ctx) const {
-	for(int i = 0; i < size_x+1; i++) {
-		ctx.draw_line(i*32 + offset_x, 0 + offset_y, i*32 + offset_x, size_y*32 + offset_y, {10, 10, 10, 255});
-	}
+void Sandbox::add_object(const Simple2D::Context& ctx, int pos_x, int pos_y, int angle, const std::string& name, const std::string& sprite_path) {
+	objects.emplace_back(Chip(ctx, pos_x, pos_y, name, sprite_path));
+	objects[objects.size()-1].set_angle(angle);
+}
 
-	for(int i = 0; i < size_y+1; i++) {
-		ctx.draw_line(0 + offset_x, i*32 + offset_y, size_x*32 + offset_x, i*32 + offset_y, {10, 10, 10, 255});
+void Sandbox::draw(int offset_x, int offset_y, const Simple2D::Context& ctx) {
+	for(auto& i : objects) {
+		i.draw(ctx, i.get_pos_x()+offset_x, i.get_pos_y()-offset_y);
 	}
 }

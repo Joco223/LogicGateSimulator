@@ -5,14 +5,16 @@ Chip::Chip()
 	pos_x(0), 
 	pos_y(0),
 	width(0),
-	height(0)
+	height(0),
+	angle(0)
 	{}
 
 
 Chip::Chip(const Simple2D::Context& ctx, int pos_x_, int pos_y_, const std::string& name_, const std::string& sprite_path_)
 	:
 	pos_x(pos_x_),
-	pos_y(pos_y),
+	pos_y(pos_y_),
+	angle(0),
 	name(name_),
 	internal_name(name_),
 	sprite_path(sprite_path_) {
@@ -61,6 +63,26 @@ void Chip::set_sprite_alpha(unsigned char new_alpha) {
 	sprite.set_alpha(new_alpha);
 }
 
-void Chip::draw(const Simple2D::Context& ctx) {
-	sprite.draw(ctx, pos_x, pos_y, width, height);
+int Chip::get_pos_x() const {
+	return pos_x;
+}
+
+int Chip::get_pos_y() const {
+	return pos_y;
+}
+
+int Chip::get_sprite_width() {
+	return sprite.get_sprite_width();
+}
+
+int Chip::get_sprite_height() {
+	return sprite.get_sprite_height();
+}
+
+void Chip::set_angle(int new_angle) {
+	angle = new_angle;
+}
+
+void Chip::draw(const Simple2D::Context& ctx, int pos_x_, int pos_y_) {
+	sprite.draw_rotated(ctx, pos_x_, pos_y_, width, height, angle);
 }

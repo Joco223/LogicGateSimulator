@@ -23,7 +23,8 @@ namespace Simple2D {
 			regular_colour(regular_colour_),
 			clicked_colour(clicked_colour_) {}
 
-		void button::add_text(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name) {
+		void button::add_text(Simple2D::Text_context& text_ctx, const Simple2D::Context& ctx, const std::string& display_name_) {
+			display_name = display_name_;
 			float old_height = height;
 			int tmp_w = 0;
 			int tmp_h = 0;

@@ -13,10 +13,9 @@
 #include <algorithm>
 
 class Asset_loader {
-private:
-	std::vector<Chip> chips;
 public:
 	Asset_loader();
 
 	void load_chips(Simple2D::Context& ctx, const std::string& chips_path, GUI_Controller& gui_controller);
+	void load_logic_gates(Simple2D::Context& ctx, const std::string& logic_gates_path, GUI_Controller& gui_controller);
 };

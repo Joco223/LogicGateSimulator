@@ -5,12 +5,14 @@
 
 #include "Simple2D.h"
 
+#include "Chip.h"
+
 class Sandbox {
 private:
-	int size_x, size_y;
-	//std::vector<tile> tiles;
+	std::vector<Chip> objects;
 public:
-	Sandbox(int x, int y);
+	Sandbox();
 
-	void draw_grid(int offset_x, int offset_y, const Simple2D::Context& ctx) const;
+	void add_object(const Simple2D::Context& ctx, int pos_x, int pos_y, int angle, const std::string& name, const std::string& sprite_path);
+	void draw(int offset_x, int offset_y, const Simple2D::Context& ctx);
 };
